@@ -91,6 +91,8 @@ function dreamy_town_setup() {
 		'search-form', 'comment-form', 'comment-list', 'gallery', 'caption'
 		) );
 
+
+	
 	// This theme uses its own gallery styles.
 	add_filter( 'use_default_gallery_style', '__return_false' );
 }
@@ -207,6 +209,110 @@ function dreamy_town_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'dreamy_town_scripts' );
 
+function map_position_menu() {
+	add_theme_page('Posición del mapa', 'Posición del mapa', 'edit_theme_options', 'dreamy_town_options.php', 'map_position_function');
+}
+add_action('admin_menu', 'map_position_menu');
+
+function dreamy_register_settings(){
+
+	register_setting( 'dreamy_town_options', 'dreamy_town_options', 'dreamy_validate_settings' );
+
+
+	add_settings_section( 'dreamy_text_section', 'Posición inicial del Mapa', 'dreamy_display_section', 'dreamy_town_options.php' );
+
+    // Create textbox field
+	$field_args = array(
+		'type'      => 'url',
+		'id'        => 'url_textbox',
+		'name'      => 'url_textbox',
+		'desc'      => 'URL del mapa de Google Maps en la posición y altura deseada',
+		'std'       => '',
+		'label_for' => 'url_textbox',
+		'class'     => ''
+		);
+
+	add_settings_field( 'url_textbox', 'URL de Google Maps', 'dreamy_display_setting', 'dreamy_town_options.php', 'dreamy_text_section', $field_args );
+	add_settings_field( 'lat_textbox', 'Latitud', 'dreamy_display_setting', 'dreamy_town_options.php', 'dreamy_text_section', array(id => 'lat_textbox', 'type' => 'text'));
+	add_settings_field( 'lng_textbox', 'Longitud', 'dreamy_display_setting', 'dreamy_town_options.php', 'dreamy_text_section', array(id => 'lng_textbox', 'type' => 'text') );
+	add_settings_field( 'zoom_textbox', 'Zoom', 'dreamy_display_setting', 'dreamy_town_options.php', 'dreamy_text_section', array(id => 'zoom_textbox', 'type' => 'text') );
+
+}
+add_action( 'admin_init', 'dreamy_register_settings' );
+
+function map_position_function(){
+	$options = get_option( 'dreamy_town_options' );
+	?>
+	<form method="post" enctype="multipart/form-data" action="options.php">
+		<?php 
+		settings_fields('dreamy_town_options'); 
+
+		do_settings_sections('dreamy_town_options.php');
+		?>
+		<p class="submit">  
+			<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />  
+		</p> 
+	</form>
+
+	<div id="dreamy_googlemaps" style="height: 400px"></div>
+	<script type="text/javascript">
+		var latMap = '<?php echo $options["lat_textbox"]; ?>',
+		lngMap = '<?php echo $options["lng_textbox"]; ?>',
+		zoomMap = <?php echo $options["zoom_textbox"]; ?>;
+	</script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript" src="<?php echo get_template_directory_uri(); ?>/js/dreamy_markers.js"></script>
+	<?php
+}
+
+function dreamy_display_setting($args)
+{
+	extract( $args );
+
+	$option_name = 'dreamy_town_options';
+
+	$options = get_option( $option_name );
+
+	switch ( $type ) {  
+		case 'url':  
+		$options[$id] = stripslashes($options[$id]);  
+		$options[$id] = esc_attr( $options[$id]);  
+		echo "<input class='regular-text$class' type='text' id='$id' name='" . $option_name . "[$id]' value='$options[$id]' />";  
+		echo ($desc != '') ? "<br /><span class='description'>$desc</span>" : "";  
+		break;
+		case 'text':
+		$options[$id] = stripslashes($options[$id]);  
+		$options[$id] = esc_attr( $options[$id]); 
+		echo $options[$id]; 
+		break;  
+	}
+}
+function dreamy_display_section(){
+
+}
+function dreamy_validate_settings($input){
+
+	$txt=$input['url_textbox'];
+
+	$re1='.*?';	# Non-greedy match on filler
+	$re2='([+-]?\\d*\\.\\d+)(?![-+0-9\\.])';	# Float 1
+	$re3='.*?';	# Non-greedy match on filler
+	$re4='([+-]?\\d*\\.\\d+)(?![-+0-9\\.])';	# Float 2
+  	$re5='.*?';	# Non-greedy match on filler
+  	$re6='(\\d+)';	# Integer Number 1
+
+  if ($c=preg_match_all ("/".$re1.$re2.$re3.$re4.$re5.$re6."/is", $txt, $matches))
+  {
+  	$float1=$matches[1][0];
+  	$float2=$matches[2][0];
+    $int1=$matches[3][0];
+  }
+
+  $input['lat_textbox'] = !is_null($float1)?$float1:38.0243962;
+  $input['lng_textbox'] = !is_null($float2)?$float2:-6.422818;
+  $input['zoom_textbox'] = !is_null($int1)?$int1:16;
+  return $input;
+}
 /**
  * Enqueue Google fonts style to admin screen for custom header display.
  *
@@ -314,6 +420,8 @@ add_action( 'add_meta_boxes', 'dreamy_add_custom_meta_box' );
 
 // Output the Metabox
 function dreamy_meta_box_output( $post ) {
+
+	$options = get_option( 'dreamy_town_options' );
 	// create a nonce field
 	wp_nonce_field( 'my_dreamy_meta_box_nonce', 'dreamy_meta_box_nonce' ); ?>
 	<h3>Mapa: selecciona un punto</h3>
@@ -336,14 +444,17 @@ function dreamy_meta_box_output( $post ) {
 		<input type="hidden" name="dreamy_icon" id="dreamy_icon" value="<?php echo dreamy_get_custom_field( 'dreamy_icon' ); ?>" required/>
 	</p>
 	<script type="text/javascript">
-	var urlMarkers = '<?php echo get_bloginfo("template_url"); ?>/images/markers/',
-	iconMarker = '<?php echo dreamy_get_custom_field( "dreamy_icon" ); ?>',
-	latMarker = '<?php echo dreamy_get_custom_field( "dreamy_lat" ); ?>',
-	lngMarker = '<?php echo dreamy_get_custom_field( "dreamy_long" ); ?>';
+		var urlMarkers = '<?php echo get_bloginfo("template_url"); ?>/images/markers/',
+		iconMarker = '<?php echo dreamy_get_custom_field( "dreamy_icon" ); ?>',
+		latMarker = '<?php echo dreamy_get_custom_field( "dreamy_lat" ); ?>',
+		lngMarker = '<?php echo dreamy_get_custom_field( "dreamy_long" ); ?>',
+		latMap = '<?php echo $options["lat_textbox"]; ?>',
+		lngMap = '<?php echo $options["lng_textbox"]; ?>',
+		zoomMap = <?php echo $options["zoom_textbox"]; ?>;
 	</script>
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript" src="<?php echo get_template_directory_uri(); ?>/js/dreamy_markers.js"></script>
-	<?php
+	<?php 
 }
 
 

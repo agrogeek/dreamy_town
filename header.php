@@ -8,6 +8,10 @@
  * @subpackage Dreamy_Town
  * @since esArroyo.es 2014
  */
+
+	$options = get_option( 'dreamy_town_options' );
+
+
 ?><!DOCTYPE html>
 <!--[if IE 7]>
 <html class="ie ie7" <?php language_attributes(); ?>>
@@ -35,6 +39,6 @@
 	<?php wp_head(); ?>
 </head>
 
-<body <?php body_class(); ?>>
+<body <?php body_class(); error_log(var_export($options, true));?> data-lat="<?php echo $options['lat_textbox']; ?>" data-lng="<?php echo $options['lng_textbox']; ?>" data-zoom="<?php echo $options['zoom_textbox']; ?>">
 	<div id="googlemaps"></div>
 	<?php get_sidebar(); ?>

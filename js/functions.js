@@ -9,6 +9,7 @@
  _window,
  my_domain_selector,
  position,
+ zoom,
  latLng,
  map, markers;
  jQuery( document ).ready(function() {
@@ -16,7 +17,8 @@
 	body    = jQuery( 'body' );
 	_window = jQuery( window );
 	my_domain_selector = "a[href*='http://esarroyo.es']:not(a[href$='.jpg'])";
-	position = [38.0243962, -6.422818];
+	position = [body.data('lat'), body.data('lng')];
+	zoom = body.data('zoom');
 	latLng = new google.maps.LatLng(position[0], position[1]);
 	markers = {};
 
@@ -175,7 +177,7 @@
 
 	function showGoogleMaps() {
 		var mapOptions = {
-	        zoom: 16, // initialize zoom level - the max value is 21
+	        zoom: zoom, // initialize zoom level - the max value is 21
 	        streetViewControl: false, // hide the yellow Street View pegman
 	        scaleControl: false, // allow users to zoom the Google Map
 	        mapTypeId: google.maps.MapTypeId.HYBRID,

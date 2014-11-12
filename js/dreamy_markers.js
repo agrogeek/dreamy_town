@@ -1,12 +1,12 @@
 var map, marker;
 function init(){
-	var position = [38.0243962, -6.422818];
+	var position = [latMap, lngMap];
 	var latLng = new google.maps.LatLng(position[0], position[1]);
 
 
 
 	var mapOptions = {
-	        zoom: 16, // initialize zoom level - the max value is 21
+	        zoom: zoomMap, // initialize zoom level - the max value is 21
 	        streetViewControl: false, // hide the yellow Street View pegman
 	        scaleControl: false, // allow users to zoom the Google Map
 	        mapTypeId: google.maps.MapTypeId.HYBRID,
