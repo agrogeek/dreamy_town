@@ -39,6 +39,8 @@ endforeach;
 
 
 ?>
+	</div><!-- Content -->
+</div><!-- Container-fluid -->
 <script>
 
  jQuery( document ).ready(function() {

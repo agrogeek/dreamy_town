@@ -9,7 +9,7 @@
  * @since esArroyo.es 2014
  */
 ?>
-<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+<article id="post-<?php the_ID(); ?>" <?php //post_class(); ?> class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
 	<h1><?php the_title();	?></h1>
 	<?php dreamy_town_post_thumbnail(); ?>
 

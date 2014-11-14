@@ -18,7 +18,6 @@ global $category_slug;
 $category_slug = "all";
 
 // Index page
-	get_header(); ?>
-	<div id="container"></div>
-	<?php get_footer();
+	get_header();
+	get_footer();
 ?>

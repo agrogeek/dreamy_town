@@ -97,7 +97,7 @@
 				data: {ajax: true},
 				success: function(main) {
 		        	// Load content
-		        	jQuery('#container').html(main);
+		        	jQuery('#content').html(main);
 		        	showMain();
 		        	easy_fancybox_handler();
 		        }
@@ -199,7 +199,7 @@
 	}
 
 	function showMain(){
-		jQuery('#container').css({display: 'block'});
+		jQuery('#content').css({display: 'block'});
 		jQuery('#main').css({width: '0%'});
 		jQuery('#main').animate({
 			width: '100%', 
@@ -209,7 +209,7 @@
 
 	function hideMain(){
 		jQuery('#main').fadeOut('slow', function(){
-			jQuery('#container').css({display: 'none'});
+			jQuery('#content').css({display: 'none'});
 		});
 	}
 
