@@ -41,26 +41,10 @@ Use it to make something cool, have fun, and share what you've learned with othe
  	height: 100%;
  	min-height: 100%;
  }
-
- /* 3.0 - Sidebar */
- #sidebar{
- 	position: absolute;
- 	z-index: 2;
- 	padding-left: 10px;
- 	left: 0px;
- }
-
-#sidebar #logo{
-	width: 250px;
+/* 3.0 Navbar */
+.navbar-brand>img{
+	height: 48px;
 }
-@media screen and (max-width: 992px){
-	#sidebar #logo{
-		width: 140px;
-	}
-}
- #sidebar #logo h1{
- 	background-color: white;
- }
 
  /* 4.0 - Googlemaps */
  #googlemaps::before, #googlemaps::after {
@@ -77,11 +61,17 @@ Use it to make something cool, have fun, and share what you've learned with othe
  #googlemaps::after {
  	bottom: 0px;
  }
+ .marker_labels{
+ 	background-color: rgba(0,0,0,0.7);
+ 	padding: 0 3px;
+ 	color: white;
+ 	border-radius: 5px;
+ }
 
  /**/
  #content{
  	position: absolute;
- 	top: 60px;
+ 	top: 50px;
  	bottom: 30px;
  	display: none;
  	background-color: rgba(255,255,255,0.95);
@@ -95,12 +85,11 @@ Use it to make something cool, have fun, and share what you've learned with othe
  #content #main-hide {
  	width: 25px;
  	height: 25px;
- 	float: right;
- 	top: -25px;
+ 	right: 15px;
  	position: relative;
  	background-color: white;
  	margin-bottom: -25px;
  	cursor: pointer;
  	text-align: center;
- 	opacity: 0.9;
+ 	z-index: 999;
  }

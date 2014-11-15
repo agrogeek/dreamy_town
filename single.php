@@ -6,8 +6,10 @@ endif;
 
 // Get post content
 if ( have_posts() ) : the_post();
-?><button id="main-hide" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-<div id="main"><?php
+?>
+<div id="main">
+	<button id="main-hide" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+	<?php
 	get_template_part( 'content', 'post' );
 
 		// If comments are open or we have at least one comment, load up the comment template.

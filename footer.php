@@ -9,33 +9,6 @@
  * @since esArroyo.es 2014
  */
 global $category_slug, $is_single;
-$markers = array();
-
-$categories = get_categories();
-
-foreach ($categories as $category):
-	$slug = $category->slug;
-	$cat_id = $category->cat_ID;
-	$markers[$slug] = array();
-
-	$lastposts = get_posts(array('category' => $cat_id));
-	foreach ( $lastposts as $post ) :
-  		setup_postdata( $post );
-  		$the_category = get_the_category();
-		// Set marker info
-		$marker = array(
-			"title" => get_the_title(),
-			"url" => get_the_permalink(),
-			"category" => $the_category[0]->slug,
-			"lat" => get_post_meta(get_the_ID(), "dreamy_lat", true),
-			"lng" =>get_post_meta(get_the_ID(), "dreamy_long", true),
-			"icon" => get_template_directory_uri().'/images/markers/'.get_post_meta(get_the_ID(), "dreamy_icon", true)
-			);
-
-		$markers[$slug][] = $marker;
-	endforeach;
-	wp_reset_postdata();
-endforeach;
 
 
 ?>
@@ -44,7 +17,6 @@ endforeach;
 <script>
 
  jQuery( document ).ready(function() {
- 	jQuery(body).data("markers", <?php echo json_encode($markers); ?>);
 	jQuery(body).data("dreamy_category", '<?php echo $category_slug; ?>');
 	<?php if ($is_single) { ?>
 	showMain();

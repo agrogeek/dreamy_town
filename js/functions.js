@@ -16,7 +16,8 @@
 	// Init vars
 	body    = jQuery( 'body' );
 	_window = jQuery( window );
-	my_domain_selector = "a[href*='http://esarroyo.es']:not(a[href$='.jpg'])";
+	//my_domain_selector = "a[href*='http://esarroyo.es']:not(a[href$='.jpg'])";
+	my_domain_selector = "a[href*='localhost/wordpress']:not(a[href$='.jpg'])";
 	position = [body.data('lat'), body.data('lng')];
 	zoom = body.data('zoom');
 	latLng = new google.maps.LatLng(position[0], position[1]);
@@ -29,7 +30,7 @@
 		jQuery(my_domain_selector).live('click',function(event){
 			event.preventDefault();
 			var link = jQuery(this);
-			dreamyHistory(link.attr('href'), link.text(), link.data('type_link'), link.data('category'));
+			dreamyHistory(link.attr('href'), link.text(), link.data('dt_type_link'), link.data('dt_category'));
 		});
 
 		window.onpopstate = function(event){
@@ -57,6 +58,8 @@
 		// Hide content
 		hideMain();
 	});
+
+	//TODO add dreamyhistory to navbar menu
 });
 
 
@@ -96,6 +99,7 @@
 				method: 'POST',
 				data: {ajax: true},
 				success: function(main) {
+					hideMain();
 		        	// Load content
 		        	jQuery('#content').html(main);
 		        	showMain();
@@ -111,19 +115,22 @@
 	}
 
 	function dreamyLoadMarkers(map){
-		var data = jQuery(body).data("markers");
 		var cluster = [];
-		jQuery.each(data, function(cat_name, category_markers){
+		jQuery('a.dt_category').each(function(index, category){
+			category = jQuery(category);
+			var cat_name = category.data('dt_category');
+			var category_markers = jQuery('a.dt_link_' + category.data('dt_category'));
 			markers[cat_name] = [];
 			jQuery.each(category_markers, function(index, marker_data){
-				var latLong = new google.maps.LatLng(marker_data.lat, marker_data.lng);
+				marker_data = jQuery(marker_data);
+				var latLong = new google.maps.LatLng(marker_data.data('dt_lat'), marker_data.data('dt_lng'));
 				var marker =  new MarkerWithLabel({
 					position: latLong,
 					map: map,
-					title: marker_data.title,
-					icon: marker_data.icon,
+					title: marker_data.text(),
+					icon: marker_data.data('dt_icon'),
 					animation: google.maps.Animation.DROP,
-					labelContent: marker_data.title,
+					labelContent: marker_data.text(),
 					labelAnchor: new google.maps.Point(22, 0),
 			        labelClass: "marker_labels"
 			    });
@@ -136,9 +143,9 @@
     			// Show post
     			google.maps.event.addListener(marker, 'click', function() {
     				if (typeof history.pushState !== "undefined") {
-    					dreamyHistory(marker_data.url, marker_data.title, 'post', marker_data.category);
+    					dreamyHistory(marker_data.attr('href'), marker_data.text(), 'post', marker_data.data('category'));
     				}else{
-    					window.location = marker_data.url;
+    					window.location = marker_data.attr('href');
     				}
     			});
     		});
@@ -208,7 +215,7 @@
 	}
 
 	function hideMain(){
-		jQuery('#main').fadeOut('slow', function(){
+		jQuery('#main').fadeOut(100, function(){
 			jQuery('#content').css({display: 'none'});
 		});
 	}

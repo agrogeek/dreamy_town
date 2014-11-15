@@ -51,4 +51,4 @@ $options = get_option( 'dreamy_town_options' );
 	<div class="container-fluid">
 		<?php get_sidebar(); ?>
 		<div id="googlemaps" class="fill col-lg-12"></div>
-		<div id="content" class="col-md-9 col-md-offset-3 col-sm-12">
+		<div id="content" class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">

@@ -35,6 +35,7 @@
 if ( ! isset( $content_width ) ) {
 	$content_width = 474;
 }
+add_filter( 'show_admin_bar', '__return_false' );
 
 /**
  * Dreamy Town only works in Disueños 3.6 or later.
@@ -95,6 +96,7 @@ function dreamy_town_setup() {
 	
 	// This theme uses its own gallery styles.
 	add_filter( 'use_default_gallery_style', '__return_false' );
+
 }
 endif; // dreamy_town_setup
 add_action( 'after_setup_theme', 'dreamy_town_setup' );
